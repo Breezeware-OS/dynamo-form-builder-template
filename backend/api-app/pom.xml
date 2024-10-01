@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.breezeware.dynamo.forms</groupId>
+        <artifactId>api-lib</artifactId>
+        <version>1.0.0</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>api-app</artifactId>
+    <name>Dynamo Forms Template</name>
+    <description>Dynamo Forms Restful Application</description>
+
+    <properties>
+        <jib-maven-plugin.container.destination.repository.name>
+            dynamo-forms-server/${project.artifactId}
+        </jib-maven-plugin.container.destination.repository.name>
+        <jib-maven-plugin.container.source.repository.name>
+            public.ecr.aws/breezeware/eclipse-temurin:latest
+        </jib-maven-plugin.container.source.repository.name>
+        <otel-java-agent-path>-javaagent:/app/aws-opentelemetry-agent/aws-opentelemetry-agent.jar</otel-java-agent-path>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.breezeware.dynamo</groupId>
+            <artifactId>dynamo-auth</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.breezeware.dynamo</groupId>
+            <artifactId>dynamo-utils</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.breezeware.dynamo.forms</groupId>
+            <artifactId>dynamo-forms-svc</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.breezeware.dynamo.forms</groupId>
+            <artifactId>dynamo-form-builder-web-bff</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <from>
+                        <image>
+                            ${jib-maven-plugin.container.source.repository.name}
+                        </image>
+                    </from>
+                    <container>
+                        <!-- <mainClass>${main-class}</mainClass> -->
+                        <jvmFlags>
+                            ${otel-java-agent-path}
+                        </jvmFlags>
+                    </container>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
